@@ -1,34 +1,45 @@
-# 특정 원소가 속한 집합을 찾기
-def find(parent, x):
-    if parent[x] != x:
-        parent[x] = find(parent, parent[x])
-    return parent[x]
-
-
-def union(parent, a, b):
-    a = find(parent, a)
-    b = find(parent, b)
-    if a < b:
-        parent[b] = a
-    else:
-        parent[a] = b
-
+import sys
+input = sys.stdin.readline
+sys.setrecursionlimit(10**8)
+from collections import defaultdict
 
 n = int(input())
-parent = [0] * (n + 1) 
-
-
-for i in range(1, n + 1):
-    parent[i] = i
-
-
-
+graph = defaultdict(list)
 for i in range(n):
     a, b = map(int, input().split())
+    graph[a].append(b)
+    graph[b].append(a)
 
-    if find(parent, a) == find(parent, b):
-        print(a,b)
+visited = [False for _ in range(n+1)]
 
-    else:
-        union(parent, a, b)
+circle = list()
+last = -1
 
+def FindCycle(u, tar):
+    global last
+    if visited[u] == 1:
+        last = u
+        if u not in circle:
+            circle.append(u)
+        return
+    visited[u] = 1
+    for i in graph[u]:
+        if i == tar:
+            continue
+        FindCycle(i, u)
+
+        if last == -2:
+            return
+        if last == u:
+            last = -2
+            return
+
+        if last >= 0:
+            if u not in circle:
+                circle.append(u)
+            return
+
+FindCycle(1, last)
+circle.sort()
+print(len(circle))
+print(*circle)
