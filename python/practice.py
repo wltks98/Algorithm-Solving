@@ -1,3 +1,6 @@
-a=str([0, 0, 0])
+arr=[[1,2],[3,4]]
 
-print(a)
+arr2=list(zip(*arr[::-1]))
+
+print(arr)
+print(arr2)
